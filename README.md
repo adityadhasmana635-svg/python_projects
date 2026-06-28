@@ -1,2 +1,2 @@
 # python_projects
-Here , It is my first repository and there was i sends my daily python projects that I have done but I am a Beginner.
+This repository contains my daily Python practice programs. I am a beginner and I upload my coding exercises here every day.
