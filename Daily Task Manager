@@ -1,0 +1,333 @@
+# Daily Tasks Manager
+
+task_list = []
+
+
+def add_task():
+    print("\n --- Add Task ---")
+    
+    task = input("\nEnter task : ").strip().title()
+    found = False
+    
+    if task == "":
+        print("\nInvalid Task!")
+        return
+        
+    for tasks in task_list:
+        if tasks["title"] == task:
+            found = True
+    
+    if found:
+        print("Task Already Available!")
+        return
+    
+    priority = ""
+    
+    while True:
+        
+        print("\n- Task Priority -")
+        print("1. High")
+        print("2. Medium")
+        print("3. Low")   
+        
+        choice = input("Enter your choice : ").strip()
+        
+        if choice == "1":
+            priority = "High"
+            break
+        
+        elif choice == "2":
+            priority =  "Medium"
+            break
+            
+        elif choice == "3":
+            priority = "Low"
+            break
+            
+        else:
+            print("\nInvalid Choice")
+        
+    
+    tasks = {"title" : task, "completed" : False, "priority" : priority}
+    task_list.append(tasks)
+    print("Task Added!")
+    
+
+def view_task():
+    print("\n --- View Task ---")
+    
+    count = 0
+    if task_list == [] :
+        print("\nNo Task Available!")
+        return
+    
+    for task in task_list:
+        count += 1
+        
+        if task["completed"] == True:
+            print(count,".",task["title"],"-","Completed","-",task["priority"])
+            
+        else:
+            print(count,".",task["title"],"-","Pending","-",task["priority"])
+        
+    
+def complete_task():
+    print("\n --- Complete Task --- ")
+    
+    if task_list == []:
+        print("\nNo Task Available!")
+        return
+        
+    while True:
+        try:
+            task_no = int(input("\nEnter Task Number : ").strip())
+            
+            if task_no <= 0:
+                print("\nInvalid Task Number! Please Enter a positive number.")
+            
+            else:
+                break
+                
+        except ValueError:
+            print("\nInvalid Task Number!")
+            
+    count = 0
+    found = False
+    
+    for task in task_list:
+        count+=1
+        
+        if count == task_no:
+            found = True
+            print("\nSelected Task : ",task["title"])
+            
+            if task["completed"]:
+                print("\nTask is already completed!")
+                return
+                
+            task["completed"] = True
+            print("\nTask Completed!")
+            
+    if not found:
+        print("\nInvalid Task!")
+        return
+  
+def delete_task():
+    print("\n --- Delete Task ---")
+    
+    if task_list == []:
+        print("\nNo Task Available!")
+        return
+        
+    while True:
+        try:
+            task_no = int(input("\nEnter Task Number : ").strip())
+            
+            if task_no <= 0:
+                print("\nInvalid Task Number! Please Enter a positive number.")
+            
+            else:
+                break
+                
+        except ValueError:
+            print("\nInvalid Task Number!")
+            
+    index = -1
+    count = 0
+    found = False
+    
+    for task in task_list:
+          index += 1
+          count += 1
+          
+          if task_no == count:
+              found = True
+              print("\nSelected Task : ",task["title"])
+              del task_list[index] 
+              print("\nTask Deleted!")
+              return
+
+    if not found:
+        print("\nTask Not Found!")
+    
+def show_pending_tasks():
+    print("\n --- Show Pending Tasks --- ")
+    print()
+    
+    if task_list == []:
+        print("No Task Available!")
+        return
+
+    count = 0
+    found = False
+    
+    for task in task_list:
+        count += 1
+        
+        if not task["completed"]:
+            found = True
+            print(count,".",task["title"],"-",task["priority"]) 
+
+    if not found: 
+        print("No Task Found!")   
+    
+        
+def show_completed_tasks():
+    print("\n --- Show Completed Tasks --- ")
+    print()
+    
+    if task_list == []:
+        print("No Task Available!")
+        return
+        
+    count = 0
+    found = False
+    
+    for task in task_list:
+        count += 1
+        
+        if  task["completed"]:
+            found = True
+            print(count,".",task["title"],"-",task["priority"]) 
+
+    if not found: 
+        print("No Task Found!")       
+  
+    
+def high_priority_tasks():
+    print("\n --- High Priority Tasks ---")
+    print()
+    
+    if task_list == []:
+        print("No Tasks Available!")
+        return
+        
+    count = 0
+    found = False
+    
+    for task in task_list:
+        count += 1
+        
+        if task["completed"] :
+              if task["priority"] == "High":
+                  found = True
+                  print(count,".",task["title"],"- Completed")
+                  
+        else:
+              if task["priority"] == "High": 
+                  found = True
+                  print(count,".",task["title"],"- Pending") 
+
+    if not found:
+        print("\nNo Task Found!")
+
+    
+def medium_priority_tasks():
+    print("\n --- Medium Priority Tasks ---")
+    print()
+    
+    if task_list == []:
+        print("No Tasks Available!")
+        return
+        
+    count = 0
+    found = False
+    
+    for task in task_list:
+        count += 1
+        
+        if task["completed"] :
+              if task["priority"] == "Medium":
+                  found = True
+                  print(count,".",task["title"],"- Completed")
+                  
+        else:
+              if task["priority"] == "Medium": 
+                  found = True
+                  print(count,".",task["title"],"- Pending") 
+
+    if not found:
+        print("\nNo Task Found!")
+        
+
+    
+def low_priority_tasks():
+    print("\n --- Low Priority Tasks ---")
+    print()
+    
+    if task_list == []:
+        print("No Tasks Available!")
+        return
+        
+    count = 0
+    found = False
+    
+    for task in task_list:
+        count += 1
+        
+        if task["completed"] :
+              if task["priority"] == "Low":
+                  found = True
+                  print(count,".",task["title"],"- Completed")
+                  
+        else:
+              if task["priority"] == "Low": 
+                  found = True
+                  print(count,".",task["title"],"- Pending") 
+
+    if not found:
+        print("\nNo Task Found!")
+        
+               
+def menu():
+    while True:
+        print("\n ===== DAILY TASK MANAGER =====")
+    
+        print("1. Add Task")
+        print("2. View Task")
+        print("3. Complete Task")
+        print("4. Delete Task")
+        print("5. Show Pending Tasks")
+        print("6. Show Completed Tasks")
+        print("7. High Priority Tasks")
+        print("8. Medium Priority Tasks")
+        print("9. Low Priority Tasks")
+        print("10. Exit")
+    
+        choice = input("Enter your choice : ").strip()
+        
+        if choice == "1":
+            add_task()
+            
+        elif choice == "2":
+            view_task()
+            
+        elif choice == "3":
+            complete_task()
+           
+        elif choice == "4":
+            delete_task()
+      
+        elif choice == "5":
+            show_pending_tasks()
+       
+        elif choice == "6":
+            show_completed_tasks()
+                       
+        elif choice == "7":
+            high_priority_tasks()
+         
+        elif choice == "8":
+            medium_priority_tasks()
+             
+        elif choice == "9":
+            low_priority_tasks()
+              
+        elif choice == "10":
+            print("\nThank You!")
+            break
+            
+        else:
+            print("\nInvalid Choice!")
+            
+menu()
