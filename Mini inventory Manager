@@ -1,0 +1,236 @@
+
+# Mini Inventory Manager
+
+products = [
+    {"product": "Pen", "price": 10, "quantity": 20},
+    {"product": "Notebook", "price": 50, "quantity": 8},
+    {"product": "Bag", "price": 500, "quantity": 4}
+]
+
+
+def view_products():
+    print("\n--- View Products ---\n")
+
+    if len(products) == 0:
+        print("No products are available!")
+        return
+
+    count = 0
+
+    for product in products:
+        count += 1
+        print(
+            f"{count}. {product['product']} - "
+            f"₹{product['price']} - "
+            f"Quantity: {product['quantity']}"
+        )
+
+
+def add_product():
+    print("\n--- Add Product ---\n")
+
+    while True:
+        name = input("Enter Product Name: ").strip().title()
+
+        if name == "":
+            print("Product name cannot be empty!")
+        else:
+            break
+
+    while True:
+        try:
+            price = int(input("Enter Product Price: ").strip())
+
+            if price <= 0:
+                print("Price must be greater than zero!")
+            else:
+                break
+
+        except ValueError:
+            print("Enter a valid whole-number price!")
+
+    while True:
+        try:
+            quantity = int(input("Enter Product Quantity: ").strip())
+
+            if quantity < 0:
+                print("Quantity cannot be negative!")
+            else:
+                break
+
+        except ValueError:
+            print("Enter a valid whole-number quantity!")
+
+    product = {
+        "product": name,
+        "price": price,
+        "quantity": quantity
+    }
+
+    products.append(product)
+    print("Product successfully added!")
+
+
+def sell_product():
+    print("\n--- Sell Product ---\n")
+
+    name = input("Enter Product Name: ").strip().title()
+
+    if name == "":
+        print("Invalid product name!")
+        return
+
+    found_product = None
+
+    for product in products:
+        if product["product"].lower() == name.lower():
+            found_product = product
+            break
+
+    if found_product is None:
+        print("Product not found!")
+        return
+
+    print("Product found!")
+
+    while True:
+        try:
+            quantity = int(input("Enter Quantity to Sell: ").strip())
+
+            if quantity <= 0:
+                print("Quantity must be greater than zero!")
+            else:
+                break
+
+        except ValueError:
+            print("Enter a valid whole-number quantity!")
+
+    if found_product["quantity"] >= quantity:
+        found_product["quantity"] -= quantity
+
+        print(f"{found_product['product']} sold successfully!")
+        print(f"Remaining Stock: {found_product['quantity']}")
+
+    else:
+        print("Not enough stock available!")
+        print(f"Available Stock: {found_product['quantity']}")
+
+
+def restock_product():
+    print("\n--- Restock Product ---\n")
+
+    name = input("Enter Product Name: ").strip().title()
+
+    if name == "":
+        print("Invalid product name!")
+        return
+
+    found_product = None
+
+    for product in products:
+        if product["product"].lower() == name.lower():
+            found_product = product
+            break
+
+    if found_product is None:
+        print("Product not found!")
+        return
+
+    while True:
+        try:
+            quantity = int(input("Enter Quantity to Add: ").strip())
+
+            if quantity <= 0:
+                print("Quantity must be greater than zero!")
+            else:
+                break
+
+        except ValueError:
+            print("Enter a valid whole-number quantity!")
+
+    found_product["quantity"] += quantity
+
+    print(f"Product Name: {found_product['product']}")
+    print(f"New Quantity: {found_product['quantity']}")
+
+
+def search_product():
+    print("\n--- Search Product ---\n")
+
+    name = input("Enter Product Name: ").strip().title()
+
+    if name == "":
+        print("Product name cannot be empty!")
+        return
+
+    found = False
+
+    for product in products:
+        if product["product"].lower() == name.lower():
+            found = True
+            print("\nProduct Found!")
+            print(f"Product Name: {product['product']}")
+            print(f"Price: ₹{product['price']}")
+            print(f"Quantity: {product['quantity']}")
+            break
+
+    if not found:
+        print("Product not found!")
+
+
+def inventory_value():
+    print("\n--- Inventory Value ---\n")
+
+    if len(products) == 0:
+        print("No products found!")
+        return
+
+    total = 0
+
+    for product in products:
+        product_value = product["price"] * product["quantity"]
+        total += product_value
+
+    print(f"Total Inventory Value: ₹{total}")
+
+
+def main_menu():
+    while True:
+        print("\n===== Mini Inventory Manager =====")
+        print("1. View Products")
+        print("2. Add Product")
+        print("3. Sell Product")
+        print("4. Restock Product")
+        print("5. Search Product")
+        print("6. Inventory Value")
+        print("7. Exit")
+
+        choice = input("Enter your choice: ").strip()
+
+        if choice == "1":
+            view_products()
+
+        elif choice == "2":
+            add_product()
+
+        elif choice == "3":
+            sell_product()
+
+        elif choice == "4":
+            restock_product()
+
+        elif choice == "5":
+            search_product()
+
+        elif choice == "6":
+            inventory_value()
+
+        elif choice == "7":
+            print("Thank you!")
+            return
+
+        else:
+            print("Invalid choice!")
+
+
+main_menu()
