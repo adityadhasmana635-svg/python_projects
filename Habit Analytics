@@ -1,0 +1,234 @@
+
+# Habit Analytics
+
+habits = []
+
+habit1 = {"name": "Reading", "records": []}
+habit2 = {"name": "Programming", "records": []}
+habit3 = {"name": "Workout", "records": []}
+
+habits.append(habit1)
+habits.append(habit2)
+habits.append(habit3)
+
+
+def record_habit():
+    print("\n--- Record Habit ---")
+
+    habit_name = input("\nEnter Habit name to Record: ").title().strip()
+    selected_habit = None
+
+    # Find and store the selected habit
+    for habit in habits:
+        if habit_name.lower() == habit["name"].lower():
+            selected_habit = habit
+            break
+
+    if selected_habit is None:
+        print("Habit Not Found!")
+        return
+    else:
+        print("Habit Found!")
+
+    from datetime import datetime
+    now = datetime.today()
+    date = now.strftime("%d-%m-%Y")
+
+    # Check whether today's record already exists
+    for record in selected_habit["records"]:
+        if record["date"] == date:
+            print("Already Recorded Today!")
+            return
+
+    # Validate the completion response
+    while True:
+        ask = input("Is the task completed? (Yes/No): ").strip().title()
+
+        if ask == "Yes":
+            completed = True
+            break
+        elif ask == "No":
+            completed = False
+            break
+        else:
+            print("Invalid Answer! Write only Yes or No.")
+
+    # Save the record
+    status = {"date": date, "status": completed}
+    selected_habit["records"].append(status)
+
+    print("Habit Recorded Successfully!")
+
+
+def view_habits():
+    print("\n --- Habit Records ---\n")
+    
+    count = 0
+    for habit in habits:
+        count+=1
+        print(f"{count}. {habit['name']}")
+        
+        if len(habit["records"]) == 0:
+            print("    No Records Yet.\n")
+        
+        else:
+            for record in habit["records"]:
+                if record["status"] == True:
+                    print(f"    {record['date']} : Completed\n")
+                
+                else:
+                    print(f"    {record['date']} : Not Completed\n")
+
+
+def habit_analytics():
+    print("\n --- Habit Analytics --- \n")
+    
+    ask_habit = input("Enter Habit Name : ").strip().title()
+    selected_habit = None
+    
+    for habit in habits:
+        if ask_habit.lower() == habit["name"].lower():
+            selected_habit = habit
+    
+    if selected_habit is None:
+        print("Habit Not Found!")
+        return
+    else:
+        print("Habit Found!")
+        
+    total_records = len(selected_habit["records"])
+    count = 0
+    
+    for record in selected_habit["records"]:
+        if record["status"] == True:
+            count += 1
+    
+    if total_records == 0:
+        print("No Records Available for Analysis!")
+        return
+    
+    com_prcnt = round(count/total_records * 100,2)
+    print(f"\n\033[1mCompletion Percentage :  {com_prcnt}%\033[0m")
+
+
+def overall_analytics():
+    print("\n --- Overall Analytics ---")
+    
+    count = 0
+    con_habit = None
+    con_prcnt = 0
+    
+    for habit in habits:
+        count_status = 0
+        count+=1
+        print(f"\n{count}. {habit['name']}")
+        total_records = len(habit["records"])
+        
+        if len(habit["records"]) == 0:
+            print("    No Records Yet!")
+            continue
+        
+        for record in habit["records"]:
+            
+            if record["status"] == True:
+                count_status += 1
+        
+        com_prcnt = round(count_status/total_records*100,2)    
+        print(f"    Completion Percentage : {com_prcnt}%")
+            
+        if com_prcnt>con_prcnt:
+            con_prcnt = com_prcnt
+            con_habit = habit["name"]
+       
+    if con_habit is None:
+       print("\033[1m\nNo habit records available for comparison yet.\033[0m")
+    else:
+        print(f"\033[1m\nMost Consistent Habit : {con_habit} - {con_prcnt}% \033[0m")
+                    
+
+def habit_streak():
+    print("\n --- Habit Streak ---\n")
+    
+    from datetime import datetime, timedelta
+    
+    ask_habit = input("Enter Habit Name: ").strip().title()
+    selected_habit = None
+    
+    for habit in habits:
+        if habit["name"].lower() == ask_habit.lower():
+            selected_habit = habit
+    
+    if selected_habit is None:
+        print("Habit Not Found!")
+        return
+    else:
+        print("Habit Found!")
+        
+    if len(selected_habit["records"]) == 0:
+        print("No Records Yet!")
+        return
+   
+    records_with_dates = []
+    
+    for record in selected_habit["records"]:
+        converted_date = datetime.strptime(record["date"],"%d-%m-%Y")
+
+        records_with_dates.append((converted_date, record["status"]))
+    
+    records_with_dates.sort(key = lambda records_with_dates : records_with_dates[0], reverse=True)
+    
+    streak = 0
+    expected_date = records_with_dates[0][0]
+    
+    today = datetime.today().date()
+    yesterday = today - timedelta(days=1)
+    
+    if expected_date.date() != today and expected_date.date() != yesterday:
+        streak = 0
+        print(f"\033[1m\nCurrent Streak : {streak} days\033[0m")
+        return
+    
+    for streak_record in records_with_dates:
+        if streak_record[0] == expected_date:
+            expected_date -= timedelta(days=1)
+        else:
+            break
+            
+        if streak_record[1] == True:
+            streak+=1
+        else:
+            break
+
+    print(f"\033[1m\nCurrent Streak : {streak} days\033[0m")  
+
+def main_menu():
+    while True:
+        
+        print("\n ===== Habit Analytics System =====")
+        print("1. Record Habit")
+        print("2. View Habits ")
+        print("3. Habit Analytics")
+        print("4. Overall Analytics")
+        print("5. Habit Streak")
+        print("6. Exit")
+        
+        choice = input("Enter your choice : ").strip()
+        
+        if choice == "1":
+            record_habit()
+        elif choice == "2":
+            view_habits()
+        elif choice == "3": 
+            habit_analytics()
+        elif choice == "4":
+            overall_analytics()
+        elif choice == "5":
+            habit_streak()
+        elif choice == "6":
+            print("\nExiting Habit Analytics System.")
+            print("Thank You!")
+            break
+        else:
+            print("\nInvalid Choice!")
+        
+main_menu()
