@@ -1,0 +1,213 @@
+# Library Borrowing System
+
+books = []
+members = []
+
+book = {
+    "title" : "Rich Dad Poor Dad",
+    "author" : "Robert T. Kiyosaki",
+    "status" : "Borrowed"
+}
+books.append(book)
+member = {
+    "name" : "Aditya",
+    "borrowed" : ["Rich Dad Poor Dad"]
+}
+members.append(member)
+
+
+def view_books():
+    print("\n --- View Books ---")
+     
+    for book in books:
+        print("\nTitle :",book["title"])
+        print("Author :",book["author"])
+        print("Status :",book["status"])
+         
+
+def add_book():
+    print("\n --- Add Book ---")
+    
+    book_title = input("\nEnter Book Title : ").title()
+    if book_title == "":
+        print("Invalid Book Name!")
+        return
+        
+    author = input("\nEnter Author Name : ").title()
+    if author == "":
+        print("Invalid Author Name!")
+        return
+        
+    book = {
+        "title" : book_title,
+        "author" : author,
+        "status" : "Available"
+    }
+    books.append(book)
+    print("\nBook Added!")
+    
+
+def add_member():
+    print("\n --- Add Member ---")
+    
+    member_name = input("\nEnter Member Name : ").title()
+    if member_name == "":
+        print("Invalid Member Name!")
+        return
+        
+    borrowed = []
+    
+    member = {
+        "name" : member_name,
+        "borrowed" : borrowed
+    }
+    members.append(member)
+    print("\nMember Added!")
+   
+
+def view_members():
+    print("\n --- View Members --- ")
+    
+    for member in members:
+        if len(member["borrowed"]) == 0:
+            print("\nName :",member["name"])
+            print("Borrowed Books : None")
+        
+        else :
+            print("\nName :",member["name"])
+            print("Borrowed Books : ")
+            count = 0
+            
+            for book in member["borrowed"]:
+                count += 1
+                print(count,".",book)
+
+def borrow_book():
+    print("\n --- Borrow Book --- ")
+    
+    found = False
+    ask = input("\nEnter Member Name : ").title()
+    found_member = None
+    
+    for member in members:
+        if member["name"].lower() == ask.lower():
+            found = True
+            found_member = member
+    
+    if found:
+        print(f"\nMember Found : {ask}")
+    else:
+        print("\nMember Not Found!")
+        return
+       
+    book_title = input("\nEnter Book Title : ").title()
+    found_book = False
+    found_status = False
+    found_book_name = None
+    
+    for book in books :
+        if book["title"].lower() == book_title.lower():
+            found_book = True
+            if book["status"] == "Available":
+               found_status = True
+               found_book_name = book
+           
+    if found_book:
+        print(f"\nBook Found : {book_title}")
+    else:
+        print("\nBook Not Found!")
+        return
+        
+    if found_status:
+        print("\nBook is available!")
+        found_book_name["status"] = "Borrowed"
+        found_member["borrowed"].append(book_title)
+        print("\nBook Borrowed Sucessfully!")
+    else:
+        print("\nBook is not available!")
+        return
+    
+       
+def return_book():
+    print("\n --- Return Book --- ")
+    
+    ask_member = input("\nEnter Member Name : ").strip().title()
+    found_member = None
+    found1 = False
+    
+    for member in members:
+        if member["name"] == ask_member:
+            found_member = member
+            found1 = True
+            
+    if found1:
+        print(f"\nMember Found : {ask_member}")
+    
+    else:
+        print("\nMember Not Found!")
+        return
+       
+    book_title = input("\nEnter Book Title : ").title()
+    found2 = False
+    
+    for book in found_member["borrowed"]:
+         if book.lower() == book_title.lower():
+             found2 = True
+             found_book = book
+     
+    if found2:
+        print(f"\nBook Found! : {found_book} ")
+        found_member["borrowed"].remove(found_book)
+        
+        for book_return in books:
+            if book_return["title"] == found_book:
+                book_return["status"] = "Available"
+                
+        print("\nBook Returned Sucessfully!")
+            
+    else:
+        print("\nBook Not Found in Member's' Borrowed List!")
+        return   
+        
+
+def main_menu():
+    while True:
+        
+        print("\n ===== LIBRARY BORROWING SYSTEM =====")
+    
+        print("\n1. View Books")
+        print("2. Add Book")
+        print("3. Add Member")
+        print("4. View Members")
+        print("5. Borrow Book")
+        print("6. Return Book")
+        print("7. Exit")
+    
+        choice = input("Enter your choice : ").strip()
+        
+        if choice == "1":
+            view_books()
+        
+        elif choice == "2":
+            add_book()
+        
+        elif choice == "3":
+            add_member()
+        
+        elif choice == "4":
+            view_members()
+        
+        elif choice == "5":
+            borrow_book()
+        
+        elif choice == "6":
+            return_book()
+        
+        elif choice == "7":
+            print("\nThank You!")
+            return
+            
+        else:
+            print("\nInvalid Choice!")
+    
+main_menu()
