@@ -1,0 +1,191 @@
+# Expense Tracker 2.0
+
+expenses = [
+    {"Title": "Lunch", "Amount": 120, "Category": "Food"},
+    {"Title": "Bus", "Amount": 40, "Category": "Transport"},
+    {"Title": "Movie", "Amount": 500, "Category": "Entertainment"},
+    {"Title": "Dinner", "Amount": 200, "Category": "Food"}
+]
+
+def get_valid_amount(prompt):
+    
+    while True:
+        
+        try:
+            amount = int(input(prompt))
+            
+            if amount<=0:
+                print("\nInvalid Amount! Please Enter a positive number.")
+            else:
+                break
+                
+        except ValueError:
+            print("\nInvalid Amount! Please Enter a number.")
+
+    return amount
+    
+    
+def add_expense():
+    print("\n --- Add Expense --- ")
+    
+    title = input("Enter Title : ").strip().title()
+    amount = get_valid_amount("Enter Amount : ")
+    category = input("Enter Category : ").strip().title()
+    
+    new_expense = {
+        "Title": title,
+        "Amount": amount,
+        "Category": category
+    }
+    
+    expenses.append(new_expense)
+    print("\nExpense Added Sucessfully! ")
+    
+
+def view_expense():
+    print("\n --- View Expense --- ")
+    
+    if len(expenses)==0:
+        print("\nNo Expenses Records Available!")
+        return
+        
+    for expense in expenses:
+        print("\nTitle : ",expense["Title"])
+        print("Amount : ",expense["Amount"])
+        print("Category : ",expense["Category"])
+   
+             
+def search_expense():
+    print("\n --- Search Expense --- ")
+    
+    if len(expenses)==0:
+        print("\nNo Expenses Records Available!")
+        return
+    
+    title = input("Enter Title : ").strip().title()
+    found = False
+    
+    for expense in expenses:
+        if expense["Title"] == title:
+            found = True
+            print("\nTitle : ",expense["Title"])
+            print("Amount : ",expense["Amount"])
+            print("Category : ",expense["Category"])
+            
+    if not found:
+        print("\nNo Expense Found!")
+        
+        
+def delete_expense():
+    print("\n --- Delete Expense ---")
+    
+    if len(expenses) == 0:
+        print("\nNo Expenses Record Available! ")
+        return
+    
+    delete = input("Enter Title : ").strip().title()
+    found = False
+    
+    for expense in expenses:
+        if expense["Title"] == delete:
+            found = True
+            expenses.remove(expense)
+            print("\nExpense Deleted Sucessfully!")
+            break
+            
+    if not found:
+        print("\nNo Expense Found!")
+     
+           
+def update_expense():
+    print("\n --- Update Expense --- ")
+    
+    if len(expenses)==0:
+        print("\nNo Expenses Records Available!")
+        return
+
+    title= input("\nEnter Title : ").strip().title()
+    
+    for expense in expenses:
+        if title == expense["Title"]:
+            print("\nCurrent Amount : ",expense["Amount"])
+            print("Current Category : ",expense["Category"])
+            
+            amount= get_valid_amount("\nEnter Amount : ")
+            category= input("Enter Category : ").strip().title()
+            
+            expense["Amount"] = amount
+            expense["Category"] = category
+            
+            print("\nExpense Successfully Updated! ")
+            break
+
+    else:
+        print("\nNo Expense Found!")
+
+
+def filter_by_category():
+    print("\n --- Filter by Category --- ")
+    
+    if len(expenses)==0:
+        print("\nNo Expenses Records Available!")
+        return
+    
+    category = input("\nEnter Category : ").strip().title()
+    found = False
+    total=0
+    
+    for expense in expenses:
+        if expense["Category"] == category:
+            if not found:
+                print("\n---",category,"Expenses ---")
+                found=True
+                
+            total+=expense["Amount"]
+            print(expense["Title"],"-",expense["Amount"])
+
+    if found:
+        print("\nTotal",category,"Expenses : ₹",total)
+            
+    if not found:
+        print("\nNo Expenses Found")
+
+def filter_by_amount():
+    print("\n --- Filter by Amount --- ")
+    
+    if len(expenses) == 0:
+        print("\nNo Expenses Record Available")
+        return
+        
+    minimum = get_valid_amount("Enter Minimum Amount : ")
+    maximum = get_valid_amount("Enter Maximum Amount : ")
+    found= False
+    
+    if minimum>maximum:
+        print("\nInvalid Range!")
+        return
+        
+    for expense in expenses:
+        if maximum>= expense["Amount"] and  minimum<=expense["Amount"]:
+            found = True
+            print("\nTitle : ",expense["Title"])
+            print("Amount : ",expense["Amount"])
+            print("Category : ",expense["Category"])
+           
+    if not found:
+        print('\nNo Expense Found!') 
+
+def expense_summary():
+    print("\n --- Expense Summary --- ")
+    
+    if len(expenses)==0:
+        print("\nNo Expenses Records Available!")
+        return
+        
+    total =0
+    most = 0
+    min=expenses["Amount"]
+    
+    for expense in expense
+    
+    
