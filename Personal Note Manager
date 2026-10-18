@@ -1,0 +1,130 @@
+# Personal Note Manager
+
+def add_note():
+    print("\n --- Add Note ---")
+    
+    note = input("\nEnter Note : ").strip()
+    
+    if note == "":
+        print("\nInvalid Note!")
+        return
+        
+    with open("notes.txt","a") as file:
+        file.write(note+"\n")
+    
+    print("\nNote Added Sucessfully!")
+
+
+def view_note():
+    print("\n --- View Note --- ")
+    
+    try :
+        with open("notes.txt","r") as file:
+            content = file.read()
+    
+        if content == "" :
+            print("\nNo Notes Available!")
+        else:
+            print(content)
+
+    except FileNotFoundError:
+        print("\nFile Doesn't Exists Yet!")
+    
+
+def search_note():
+    print("\n --- Search Note ---")
+    
+    try:
+        ask = input("\nEnter word/line : ").strip()
+        if ask == "":
+            print("\nInvalid Search!")
+            return
+        
+        with open("notes.txt","r") as file:
+            found = False
+    
+            for line in file:
+                if ask.lower() in line.lower():
+                    print(line,end="")
+                    found = True
+            
+        if not found:
+            print("\nNo word/line Found!")
+
+    except FileNotFoundError:
+        print("\nFile Doesn't Exists Yet!")
+
+def delete_note():
+    print("\n--- Delete Note ---")
+
+    try:
+        ask = input("Enter word/Line : ").strip()
+        if ask == "":
+            print("\nInvalid word/Line!")
+            return    
+        
+        with open("notes.txt","r") as file:
+            notes = []
+            for line in file :
+                notes.append(line)
+    
+        if not notes:
+            print("\nNo notes available!")
+            return
+        
+        found = False
+        notes1 = []
+    
+        for lines in notes:
+            if ask.lower() in lines.lower():
+                found = True
+                print("\nLine Founds!")
+ 
+            else:
+                notes1.append(lines)
+    
+        with open("notes.txt","w") as file:
+            for lines1 in notes1:
+                file.write(lines1)
+    
+        if found:
+            print("\nLine sucessfully deleted!")
+        else:
+            print("\nNo matching note found!")
+            
+    except FileNotFoundError:
+        print("\nFile Doesn't Exists Yet!")
+
+    
+def main_menu():
+    
+    while True:
+        print("\n===== PERSONAL NOTE MANAGER ===== ")
+        print("1. Add Note")
+        print("2. View Note")
+        print("3. Search Note")
+        print("4. Delete Note")
+        print("5. Exit")
+    
+        choice = input("Enter your choice : ").strip()
+        
+        if choice == "1":
+            add_note()
+            
+        elif choice == "2":
+            view_note()
+       
+        elif choice == "3":
+            search_note()
+         
+        elif choice == "4":
+            delete_note()
+                    
+        elif choice == "5":
+            print("\nThank You!")
+            break
+     
+        else:
+            print("\nInvalid Choice!")
+            
+main_menu()
