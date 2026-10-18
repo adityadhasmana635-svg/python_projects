@@ -1,0 +1,233 @@
+# Quiz Manager
+
+quiz = []
+
+question1 = {
+    "question" : "What is the capital of India?",
+    "options" : ["Hyderabad","Delhi","Uttarakhand","Himachal Pradesh"],
+    "answer" : "Delhi",
+    "difficulty" : "Easy"
+    }
+question2 = {
+    "question" : "Which one of the following is Software?",
+    "options" : ["MS Word","Mouse","Monitor","Keyboard"],
+    "answer" : "MS Word",
+    "difficulty" : "Medium"
+    }
+question3 = {
+    "question" : "How many continents are there in world ?",
+    "options" : ["Five","Ten","Eight","Seven"],
+    "answer" : "Seven",
+    "difficulty" : "Medium"
+    }
+question4 = {
+    "question" : "What does this atomic symbol \"K\" denotes?",
+    "options" : ["Chlorine","Hydrogen","Nitrogen","Potassium"],
+    "answer" : "Potassium",
+    "difficulty" : "Hard"
+}
+    
+quiz.append(question1)
+quiz.append(question2)
+quiz.append(question3)
+quiz.append(question4)
+letters = ["A.","B.","C.","D."]
+
+
+def view_questions():
+    print("\n --- View Questions --- ")
+    
+    for questions in quiz:
+        print("\n",questions["question"])
+        print("Difficulty :",questions["difficulty"])
+        
+        for letter,option in zip(letters,questions["options"]):
+                print(letter,option)
+                
+
+def take_quiz():
+    print("===== Quiz =====")
+    
+    correct = 0
+    total = 0
+    
+    for question in quiz:
+        total += 1
+        print("\n",question["question"])
+        
+        for letter,option in zip(letters,question["options"]):
+            print(letter,option)
+         
+        while True:   
+            ask = input("\nEnter Your Option : ").strip().title()
+            
+            if ask== "A." or ask=="B." or ask=="C." or ask == "D.":
+                break
+            else:
+                print("\nInvalid Option! Please Enter A/B/C/D.")
+                
+        index = letters.index(ask)
+        
+        if question["answer"] == question["options"][index]:
+            print("Correct!")
+            correct += 1
+        else:
+            print("Wrong!")
+            print("Correct Answer :",question["answer"])
+
+    print("\nScore :",correct,"/",total)      
+
+
+def delete_question():
+    print("\n --- Delete Question --- \n")
+    
+    count = 0
+    
+    for question in quiz:
+        count += 1
+        print(count,".",question["question"])
+       
+    while True: 
+        try:
+            ask = int(input("Enter Question Number : ").strip())
+            
+            if ask <= 0:
+                print("\nInvalid Question No.!")
+            elif ask > len(quiz):
+                print("\nInvalid Question No.!")
+            else:
+                break
+            
+        except ValueError:
+            print("\nInvalid Question No.!")
+            
+    index = ask-1
+    del quiz[index]
+    print("\nQuestion Deleted!")
+  
+      
+def search_question():
+    print("\n --- Search Question ---")
+    
+    ask = input("\nEnter Keyword : ").strip()
+    found = False
+    
+    if ask ==  "":
+        print("\nInvalid Keyword!")
+        return
+    
+    for question in quiz:
+        if ask.lower() in question["question"].lower():
+            found = True
+            print("\nFound :")
+            print(question["question"])
+  
+    if not found:
+        print("\nQuestion Not Found!")  
+        
+
+def add_question():
+    print("\n --- Add Question --- ")
+    
+    question = input("\nEnter Question : ").strip()
+        
+    while True:
+        print("\n -- Question Difficulty --")
+        print("1. Easy")
+        print("2. Medium")
+        print("3. Hard")
+        choice = input("Enter Your Choice : ").strip()
+        
+        if choice == "1":
+            difficulty = "Easy"
+            break
+        
+        elif choice == "2":
+            difficulty = "Medium"
+            break
+        
+        elif choice == "3":
+            difficulty = "Hard"
+            break
+        
+        else:
+            print('\nInvalid Choice!')
+        
+    optionA = input("Enter Option A : ")
+    if optionA == "":
+        print("\nInvalid Option A!")
+        return
+        
+    optionB = input("Enter Option B : ")
+    if optionB == "":
+        print("\nInvalid Option B!")
+        return
+        
+    optionC = input("Enter Option C : ")
+    if optionC == "":
+        print("\nInvalid Option C!")
+        return
+
+    optionD = input("Enter Option D : ")
+    if optionD == "":
+        print("\nInvalid Option D!")
+        return
+        
+    answer = input("Enter Correct Answer : ")
+    found = False
+    options = [optionA,optionB,optionC,optionD]
+    
+    if answer == "":
+        print("\nInvalid Answer!")
+        return
+        
+    if answer not in options:
+        print("\nInvalid Answer! Answer must be from options")
+        return
+        
+    question1 = {
+        "question" : question,
+        "options" : options,
+        "answer" : answer,
+        "difficulty" : difficulty
+    }
+    
+    quiz.append(question1)
+    print("\nQuestion Added!")
+    
+
+def main_menu():
+    while True:
+        
+        print("\n===== Quiz Manager Menu =====")
+        print("1. View Questions")
+        print("2. Take Quiz")
+        print("3. Delete Question")
+        print("4. Search Question")
+        print("5. Add Question")
+        print("6. Exit")
+        choice = input("Enter Your Choice : ").strip()
+        
+        if choice == "1":
+            view_questions()
+        
+        elif choice == "2":
+            take_quiz()
+            
+        elif choice == "3":
+            delete_question()
+            
+        elif choice == "4":
+            search_question()
+            
+        elif choice == "5":
+            add_question()
+            
+        elif choice == "6":
+            print("\nThank You!")
+            break
+        
+        else:
+            print("\nInvalid Choice!")
+            
+main_menu()
