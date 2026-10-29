@@ -1,0 +1,241 @@
+# Storage Inspector
+
+from pathlib import Path
+    
+def select_or_change_folder():
+    print("\n --- Select or Change Folder ---\n")
+
+    while True:
+        path = Path(input("Enter a folder path: ").strip())
+
+        if path.exists() and path.is_dir():
+            print("Valid folder")
+            return path
+        else:
+            print("Invalid folder")
+    
+
+def view_file_inventory(selected_folder):
+  print("\n --- View File Inventory ---\n")
+  
+  count=0
+  
+  for content in selected_folder.iterdir():
+      count += 1
+      
+      if content.is_file():
+          print(f"{count}. [File] {content.name} - {content.stat().st_size} bytes")
+      elif content.is_dir():
+          print(f"{count}. [Folder] {content.name}")
+      else:
+          print(f"{count}. {content.name}")
+  
+  if count==0:
+      print("This Folder is Empty!")
+      return
+  
+  print(f"Total Items: {count}")
+  
+
+def calculate_storage_analytics(selected_folder):
+  
+    file_count = 0
+    folder_count = 0
+    total_size = 0
+  
+    for content in selected_folder.iterdir():
+        if content.is_file():
+            file_count += 1
+            total_size += content.stat().st_size
+        elif content.is_dir():
+            folder_count += 1
+  
+    kb_total_size = round(total_size/1024,2)
+    
+    return file_count, folder_count, total_size, kb_total_size 
+  
+def view_storage_analytics(selected_folder):
+    print("\n --- View Storage Analytics ---\n")
+  
+    file_count, folder_count, total_size, kb_total_size = calculate_storage_analytics(selected_folder)
+    
+    print(f"No. of File: {file_count}")
+    print(f"No. of Folder: {folder_count}")
+    print(f"Total Size in Bytes: {total_size}")
+    print(f"Total Size in KB: {kb_total_size} kb")
+    
+
+def find_largest_file(selected_folder):
+    
+    largest_file = None
+    size = 0
+    count = 0
+        
+    for content in selected_folder.iterdir():
+        if content.is_file():
+            count += 1
+            if size <= content.stat().st_size:
+                largest_file = content.name
+                size = content.stat().st_size
+                
+    return largest_file,size,count
+  
+  
+def display_largest_file(selected_folder):
+    print("\n --- Find Largest File ---\n")
+    
+    largest_file,size,count = find_largest_file(selected_folder)
+    
+    if count==0:
+        print("Folder Doesn't contain any file.")
+        return
+    
+    print(f"Largest File: {largest_file} - {size} bytes")
+    
+
+def find_duplicate_files(selected_folder):
+    
+    content_seen = {}
+    duplicate_files = []
+    unreadable_files = []
+    found = False
+    
+    for content in selected_folder.iterdir():
+        if content.is_file() and content.suffix==".txt":
+            try:
+                file_content = content.read_text()
+            except (OSError,UnicodeDecodeError):
+                
+                unreadable_files.append(content.name) 
+                continue
+                
+            if file_content in content_seen:
+                found = True
+                duplicate_files.append((content.name, content_seen[file_content]))
+            else:
+                content_seen[file_content] = content.name
+
+    return duplicate_files,unreadable_files,found
+        
+
+def display_duplicate_files(selected_folder):
+    print("\n --- Find Duplicate Files ---\n")
+    
+    duplicate_files,unreadable_files,found = find_duplicate_files(selected_folder)
+    
+    if found:
+        print(" -- Duplicate Files --")
+        for file in duplicate_files:
+            print(f"{file[0]} is a duplicate of {file[1]}")
+    else:
+        print("No Duplicate File Found!")
+    
+    if len(unreadable_files) != 0:
+        print("\n -- Unreadable Files --")
+        for files in unreadable_files:
+            print(files)
+        
+
+
+def export_report(selected_folder):
+    print("\n --- Export Report ---\n")
+
+    files, folders, size_byte, size_kb = calculate_storage_analytics(selected_folder)
+    largest_file, largest_size, count = find_largest_file(selected_folder)
+    duplicate_files, unreadable_files, found = find_duplicate_files(selected_folder)
+
+    report = f"""-- STORAGE INSPECTOR REPORT --
+• Selected Folder: {selected_folder}
+• Number of Files: {files}
+• Number of Folders: {folders}
+• Total Size in Bytes: {size_byte}
+• Total Size in KB: {size_kb} KB
+"""
+
+    if count > 0:
+        report += f"• Largest File: {largest_file} - {largest_size} bytes\n"
+    else:
+        report += "• Largest File: No files found\n"
+
+    report += "\n--- Duplicate Files ---\n"
+
+    if found:
+        for file in duplicate_files:
+            report += f"  {file[0]} is a duplicate of {file[1]}\n"
+    else:
+        report += "No duplicate files found.\n"
+
+    report += "\n--- Unreadable Files ---\n"
+
+    if unreadable_files:
+        for counter, file in enumerate(unreadable_files, start=1):
+            report += f"  {counter}. {file}\n"
+    else:
+        report += "No unreadable files found.\n"
+
+    print(report)
+
+    report_path = selected_folder / "storage_report.txt"
+
+    try:
+        report_path.write_text(report, encoding="utf-8")
+        print("\nReport saved successfully!")
+    except OSError as error:
+        print(f"\nReport not saved: {error}")
+
+   
+def main_menu():
+    selected_folder = None
+    
+    while True:
+        
+        print("\n\033[1m  ===== STORAGE INSPECTOR =====\033[0m") 
+        print("1. Select or Change folder")
+        print("2. View File Inventory")
+        print("3. View Storage Analytics")
+        print("4. Find Largest File")
+        print("5. Find Duplicate File")
+        print("6. Export Report")
+        print("7. Exit")
+        
+        choice = input("Enter your choice: ").strip()
+        
+        if choice == "1":
+            selected_folder = select_or_change_folder()
+            
+        elif choice == "2":
+            if selected_folder is None:
+                print("Please Select Folder First!")
+            else:
+                view_file_inventory(selected_folder)
+                
+        elif choice == "3":
+            if selected_folder is None:
+                print("Please Select Folder First!")
+            else:           
+                view_storage_analytics(selected_folder)                
+        elif choice == "4":
+            if selected_folder is None:
+                print("Please Select Folder First!")
+            else:
+                display_largest_file(selected_folder)
+                
+        elif choice == "5":
+            if selected_folder is None:
+                print("Please Select Folder First!")
+            else:
+                display_duplicate_files(selected_folder)
+                
+        elif choice == "6":
+            if selected_folder is None:
+                print("Please Select Folder First!")
+            else:
+                export_report(selected_folder)
+                
+        elif choice == "7":
+            print("\nExiting Storage Inspector")
+            break
+        else:
+            print("\nInvalid Choice!")
+            
+main_menu()
