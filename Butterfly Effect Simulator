@@ -1,0 +1,238 @@
+# Butterfly Effect Simulator
+
+import random
+
+# One-time world initialization
+population = 1000
+initial_population = population
+food = 5000
+water = 2000
+year = 1
+
+drought_active = False
+drought_years = 0
+total_drought_events = 0
+total_rainfall_events = 0
+total_harvest_events = 0
+total_simulated_years = 0
+
+
+def simulate_year(population, food, water, year, drought_active, drought_years, total_drought_events, total_rainfall_events, total_harvest_events, total_simulated_years):
+    
+    drought_ended = False
+
+    # Yearly resource consumption
+    food -= 200
+    water -= 100
+    
+    if drought_active:
+        water-=200
+
+    # Random event
+    events = ["No Event", "Heavy Rainfall", "Drought", "Good Harvest"]
+    event = random.choices(
+        events,
+        weights=[70, 10, 10, 10],
+        k=1
+    )
+
+    if event[0] == "Heavy Rainfall":
+        water += 500
+        total_rainfall_events += 1
+        
+    elif event[0] == "Drought":
+        water -= 500
+        food -= 200
+        total_drought_events += 1
+        if not drought_active:
+            drought_active = True
+            drought_years = 0
+            
+    elif event[0] == "Good Harvest":
+        food += 500
+        total_harvest_events += 1
+        
+    if drought_active:
+        drought_years += 1
+        if drought_years >= 2:
+            drought_years = 0
+            drought_ended = True
+            drought_active = False
+
+    # Prevent negative resources
+    if food < 0:
+        food = 0
+
+    if water < 0:
+        water = 0
+
+    # Population changes
+    if food < 1000 or water < 500:
+        decline = int(population * 0.05)
+
+        if decline < 1:
+            population -= 1
+        else:
+            population -= decline
+    else:
+        population += int(population * 0.05)
+
+    # Display status
+    print("\n==============================")
+    print("       WORLD STATUS")
+    print("==============================")
+    print(f"\n  Year            :  {year}")
+    print(f"  Population      :  {population:,}")
+    print(f"  Food            :  {food:,} units")
+    print(f"  Water           :  {water:,} units")
+    print(f"  Event           :  {event[0]}")
+    if drought_ended:
+        print(f"  Drought Status  :  Ended this year")
+    elif drought_active:
+        print(f"  Drought Status  :  Active")
+    else:
+        print(f"  Drought Status  :  Inactive")
+    print("==============================")
+    
+    year += 1
+    total_simulated_years += 1
+
+    return population, food, water, year, drought_active, drought_years, total_drought_events, total_rainfall_events, total_harvest_events, total_simulated_years
+
+
+# Simulation mode selection
+while True:
+    print("\n--- Simulation Mode ---")
+    print("1. Fixed number of years")
+    print("2. Run until population becomes zero")
+
+    try:
+        choice = int(input("Enter your choice: ").strip())
+
+        if choice in (1, 2):
+            break
+        else:
+            print("Invalid Choice!")
+
+    except ValueError:
+        print("Invalid Choice!")
+
+
+# Mode 1: Fixed duration
+if choice == 1:
+    mode = "Fixed duration"
+    
+    while True:
+        try:
+            total_years = int(input("\nEnter years: ").strip())
+
+            if total_years > 0:
+                break
+            else:
+                print("Invalid Years! Year must be positive.")
+
+        except ValueError:
+            print("Invalid Years!")
+
+    for simulation in range(total_years):
+
+        if population <= 0:
+            print("\nPopulation has reached zero. Simulation ended.")
+            break
+
+        population, food, water, year, drought_active, drought_years, total_drought_events, total_rainfall_events, total_harvest_events, total_simulated_years = simulate_year(
+            population, food, water, year, drought_active, drought_years, total_drought_events, total_rainfall_events, total_harvest_events, total_simulated_years
+        )
+
+
+# Mode 2: Until extinction
+elif choice == 2:
+    mode = "Until extinction"
+
+    while True:
+
+        population, food, water, year, drought_active, drought_years, total_drought_events, total_rainfall_events, total_harvest_events, total_simulated_years = simulate_year(
+            population, food, water, year, drought_active, drought_years, total_drought_events, total_rainfall_events, total_harvest_events, total_simulated_years
+        )
+    
+        if population<=0:
+            print("\nPopulation has reached zero. Simulation ended.")
+            break
+      
+        if year>1000:
+            print("\nSimulation reached the maximum limit of 1000 years")
+            break
+
+# Final Statistics
+drought_prcnt = 0
+rainfall_prcnt = 0
+harvest_prcnt = 0
+
+if total_simulated_years!=0:
+    drought_prcnt = round( total_drought_events/total_simulated_years*100,2)
+    rainfall_prcnt = round( total_rainfall_events/total_simulated_years*100,2)
+    harvest_prcnt = round( total_harvest_events/total_simulated_years*100,2)
+    
+population_change = population - initial_population
+population_change_prcnt = round( population_change/initial_population*100,2 )
+
+if population_change<0:
+    sign = ""
+    status = "Decline"
+elif population_change>0:
+    sign = "+"
+    status = "Growth"
+else:
+    sign = ""
+    status = "Stable"
+    
+if food<1000:
+    food_status = "Critical"
+elif food<2000:
+    food_status = "Sufficient"
+else:
+    food_status = "Healthy"
+
+if water<500:
+    water_status = "Critical"
+elif water<1000:
+    water_status = "Sufficient"
+else:
+    water_status = "Healthy"
+
+if population<=0:
+    overall_status = "EXTINCT"
+elif food<1000 or water<500 or population_change<0:
+    overall_status = "AT RISK"
+else:
+    overall_status = "STABLE"
+
+print("\n============================================")
+print("        FINAL STATISTICS")
+print("============================================")
+
+print(f"\n      SIMULATION SUMMARY")
+print(f"--------------------------------------------")
+print(f"  Total Simulated Years  :  {total_simulated_years}")
+print(f"  Simulation Mode        :  {mode}")
+
+print(f"\n      RANDOM EVENTS")
+print(f"--------------------------------------------")
+print(f"  Drought Events          :  {total_drought_events} ({drought_prcnt}%)")
+print(f"  Heavy Rainfall  Events  :  {total_rainfall_events} ({rainfall_prcnt}%)")
+print(f"  Good Harvest Events     :  {total_harvest_events} ({harvest_prcnt}%)")
+
+print(f"\n      POPULATION")
+print(f"--------------------------------------------")
+print(f"  Initial Population   :  {initial_population:,}")
+print(f"  Final Population     :  {population:,}")
+print(f"  Population Change    :  {sign}{population_change:,} ({sign}{population_change_prcnt}%)")
+print(f"  Population Status    :  {status}")
+
+print(f"\n      RESOURCE STATUS")
+print(f"--------------------------------------------")
+print(f"  Food   :  {food:,} ({food_status})")
+print(f"  Water  :  {water:,} ({water_status})")
+
+print(f"\n  OVERALL WORLD STATUS  :  {overall_status}")
+print("============================================")
